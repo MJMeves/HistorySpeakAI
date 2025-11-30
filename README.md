@@ -9,8 +9,8 @@ The app captures your voice, uses **AI** to identify who you want to talk to, ge
   * **Voice Input:** Press spacebar to ask a question (e.g., *"I want to ask Napoleon why he invaded Russia"*).
   * **AI Orchestration:**
       * **Transcription:** OpenAI Whisper (via Replicate).
-      * **Intelligence:** Llama 3 70B (via Replicate) for historical roleplay.
-      * **Visuals:** Flux Schnell (via Replicate) for generating evolving historical portraits.
+      * **Intelligence:** OpenAI GPT-5-mini (via Replicate) for historical roleplay.
+      * **Visuals:** Qwen-image or Flux Schnell (via Replicate) for generating evolving historical portraits.
       * **Voice:** Coqui XTTS v2 (via Replicate) for cloning gender-appropriate voices.
   * **Multimedia Interface:** Smooth image cross-fading, audio playback controls (Pause, Resume, Replay), and volume adjustment.
 
