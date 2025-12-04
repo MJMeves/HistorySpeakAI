@@ -285,12 +285,11 @@ class HistoryChatApp:
                     MODEL_WHISPER, {"audio": file}, step_name="Transcription"
                 )
 
-            user_text = 'I want to talk to King Tut and I want to know what his favorite food is'
-            # (
-            #     output.get("transcription")
-            #     if isinstance(output, dict)
-            #     else (output.get("text") if isinstance(output, dict) else str(output))
-            # )
+            user_text = (
+                output.get("transcription")
+                if isinstance(output, dict)
+                else (output.get("text") if isinstance(output, dict) else str(output))
+            )
             print(f"User said: {user_text}")
 
             # 2. Brain - Historical figure + accent
