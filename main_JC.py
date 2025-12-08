@@ -28,10 +28,10 @@ if not REPLICATE_API_TOKEN:
 
 # --- Model Definitions ---
 MODEL_WHISPER = "openai/whisper:4d50797290df275329f202e48c76360b3f22b08d28c196cbc54600319435f8d2"
-MODEL_BRAIN = "meta/meta-llama-3-70b-instruct"
+MODEL_BRAIN = "openai/gpt-5-mini"
 MODEL_IMAGE = "black-forest-labs/flux-schnell"
 MODEL_TTS = "lucataco/xtts-v2:684bc3855b37866c0c65add2ff39c78f3dea3f4ff103a436465326e0f438d55e"
-MODEL_I2V = "wan-video/wan-2.5-i2v-fast"
+MODEL_I2V = "cjwbw/sadtalker:a519cc0cfebaaeade068b23899165a11ec76aaa1d2b313d40d214f204ec957a3"
 
 
 # Voice Reference URLs for XTTS-v2
@@ -299,7 +299,7 @@ class HistoryChatApp:
                 "You are an AI acting as a historical figure. "
                 "1. Identify the historical character from the user's input. "
                 "2. Determine their gender ('male' or 'female'). "
-                "3. Write a dramatic, first-person monologue (100-200 words) answering the user. "
+                "3. Write a detailed and concise, first-person monologue answering the user. "
                 "Output strictly valid JSON: "
                 '{"character_name": "Name", "gender": "male/female", "monologue": "Text"} '
                 "Do not include markdown or code blocks."
@@ -370,7 +370,8 @@ class HistoryChatApp:
                     "text": monologue,
                     "language": "en",
                     "speaker": selected_voice_url,
-                    "cleanup_voice": True
+                    "cleanup_voice": True,
+                    "speed": 1.2
                 },
                 step_name="Voice Synthesis",
             )
@@ -386,7 +387,7 @@ class HistoryChatApp:
 
             # Clip audio to maximum 29 seconds for WAN video generator
             audio_data, sample_rate = sf.read(temp_audio_path)
-            max_duration = 29.0  # seconds
+            max_duration = 60.0  # seconds
             max_samples = int(max_duration * sample_rate)
             
             if len(audio_data) > max_samples:
@@ -401,7 +402,7 @@ class HistoryChatApp:
 
             # 5. Image-to-Video with WAN 2.5 i2v FAST
             self.update_status(
-                f"Processing... (5/5 Creating WAN 2.5 talking video)"
+                f"Processing... (5/5 Creating SadTalker talking video)"
             )
 
             with open(static_image_path, "rb") as img_file, open(
@@ -410,15 +411,18 @@ class HistoryChatApp:
                 video_output = self.run_with_retry(
                     MODEL_I2V,
                     {
-                        "image": img_file,
-                        "audio": aud_file,
-                        "resolution": "720p",
-                        "duration": 5,
-                        "prompt": (
-                            f"A realistic talking portrait of {figure_name}, "
-                            "accurate lip-sync to the given audio, cinematic framing."
-                        ),
-                        "seed": 0,
+                        "driven_audio": aud_file,
+                        "source_image": img_file
+        
+                        # "image": img_file,
+                        # "audio": aud_file,
+                        # "resolution": "720p",
+                        # "duration": 5,
+                        # "prompt": (
+                        #     f"A realistic talking portrait of {figure_name}, "
+                        #     "accurate lip-sync to the given audio, cinematic framing."
+                        # ),
+                        # "seed": 0,
                     },
                     step_name="Image-to-Video Generation",
                 )
